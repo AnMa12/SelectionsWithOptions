@@ -65,15 +65,13 @@ function optionsSet(selectId, arrOptions, i) {
 	option.text = arrOptions[i].innerHTML;
 	if(alreadyAdded(selectId,option.text) == false)
 		document.getElementById(selectId).add(option);
-	///!!!!! pentru toate?!?!? add la inceput si luam contor
+		///!!!!! pentru toate?!?!? add la inceput si luam contor
 	}
 
 function optionsAll(selectId) {
-		
 	var option = document.createElement("option");
 	option.text = "Toate";
 	document.getElementById(selectId).add(option);	
-		
 }
 
 function alreadyAdded(selectId, option) {
