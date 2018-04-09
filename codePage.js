@@ -26,27 +26,61 @@ window.onload = function () {
 		}		
 	
 	/* ------ --------------------------- ------ */	
-		
-		
-		
-		
-		
-		
-	function optionsAll(selectId) {
-		
-		var option = document.createElement("option");
-		option.text = "Toate";
-		document.getElementById(selectId).add(option);	
-		
-	}
-	   
 	function optionsSet(selectId) {
-		var option = document.createElement("option");
-		option.text = arrOptions[i].innerHTML;
+	var option = document.createElement("option");
+	option.text = arrOptions[i].innerHTML;
+	if(alreadyAdded(selectId,option.text) == false)
 		document.getElementById(selectId).add(option);
-		///!!!!! pentru toate?!?!? add la inceput si luam contor
-        ///!!!! de adaugat doar daca nu exista 
-	}
+	///!!!!! pentru toate?!?!? add la inceput si luam contor
+}
+	/* ------ */
+	
+	//filter();
+	
+	
+	/* ------ */
+
+	
+	
+	
+	/*function filter() {
+		var arrSelections = document.getElementById("selectA");
+			for(var i = 0; i < arrSelections.length; i++)
+				if(arrSelections[i].selected == true) 
+					var input = arrSelections[i].innerHTML;
+		
+		table = document.getElementById("myTable");
+			tr = table.getElementsByTagName("tr");
+				for (i = 0; i < tr.length; i++) {
+					td = tr[i].getElementsByTagName("td")[0];
+					if (td) {
+						if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+							tr[i].style.display = "";
+					} else {
+					tr[i].style.display = "none";
+					}
+			}       
+		}
+		
+	}*/
+
+}
+
+function optionsAll(selectId) {
+		
+	var option = document.createElement("option");
+	option.text = "Toate";
+	document.getElementById(selectId).add(option);	
+		
+}
+	   
 
 
+function alreadyAdded(selectId, option) {
+	//functie pentru a avea optiunile o singura data in select
+	var arrSelections = document.getElementById(selectId);
+	for(var i = 0; i < arrSelections.length; i++)
+		if(arrSelections[i].innerHTML == option) 
+			return true;
+	return false;	
 }
