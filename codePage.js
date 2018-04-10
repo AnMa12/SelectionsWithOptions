@@ -8,107 +8,117 @@ window.onload = function () {
 	
 	/* --- Filter the options --- */
 	document.getElementById("selectA").setAttribute("onchange",
-		"optionChanged('selectA','selectB','selectC',0)");
+		"optionChanged('selectA','selectB','selectC')");
 	document.getElementById("selectB").setAttribute("onchange",
-		"optionChanged('selectB','selectA','selectC',1)");
+		"optionChanged('selectB','selectA','selectC')");
 	document.getElementById("selectC").setAttribute("onchange",
-		"optionChanged('selectC','selectB','selectA',2)");
+		"optionChanged('selectC','selectB','selectA')");
 	
 	/* --- Remove filter --- */
-	document.getElementById("btnA").setAttribute("onclick","removeFilter('selectA',0)");
-	document.getElementById("btnB").setAttribute("onclick","removeFilter('selectB',1)");
-	document.getElementById("btnC").setAttribute("onclick","removeFilter('selectC',2)");
+	document.getElementById("btnA").setAttribute("onclick","removeFilter('selectA')");
+	document.getElementById("btnB").setAttribute("onclick","removeFilter('selectB')");
+	document.getElementById("btnC").setAttribute("onclick","removeFilter('selectC')");
 }
 
-function removeFilter(currentSelectId, currentIndex) {
+function optionChanged(currentSelectId, secondSelectId, thirdSelectId) {
+	//get the new selected option
 	var input = getSelectedOption(currentSelectId);
-	table = document.getElementById("myTable");
-		tr = table.getElementsByTagName("tr");
-			for (i = 0; i < tr.length; i++) {
-				tdA = tr[i].getElementsByTagName("td")[0];
-				tdB = tr[i].getElementsByTagName("td")[1];
-				tdC = tr[i].getElementsByTagName("td")[2];
-				if(currentSelectId == "selectA") {
-					if(tdA.innerHTML != slctOptionA && 
-					  (tdB.innerHTML == slctOptionB || slctOptionB=="") &&
-					  (tdC.innerHTML == slctOptionC || slctOptionC=="")) {
+	if(input != "Toate") {
+		setOption(currentSelectId, input);
+		table = document.getElementById("myTable");
+			tr = table.getElementsByTagName("tr");
+				for (i = 0; i < tr.length; i++) {
+					tdA = tr[i].getElementsByTagName("td")[0];
+					tdB = tr[i].getElementsByTagName("td")[1];
+					tdC = tr[i].getElementsByTagName("td")[2];
+					//display:none all the rows that don t contain the 
+					//selected option from all the three selects
+					if((tdA.innerHTML != slctOptionA && slctOptionA != "") || 
+					   (tdB.innerHTML != slctOptionB && slctOptionB != "") || 
+					   (tdC.innerHTML != slctOptionC && slctOptionC != "")) {
+							tr[i].style.display = "none";
+							var options = tr[i].getElementsByTagName("td");
+							for (var j = 0; j < 3; j++) 
+								options[j].style.display = "none";
+						} else {
 							tr[i].style.display = "";
 							var options = tr[i].getElementsByTagName("td");
 							for (var j = 0; j < 3; j++) 
-								options[j].style.display = "";
-						}
-				} else if(currentSelectId == "selectB") {
-					if(tdB.innerHTML != slctOptionB &&
-					  (tdA.innerHTML == slctOptionA || slctOptionA=="") &&
-					  (tdC.innerHTML == slctOptionC || slctOptionC=="")) {
-							tr[i].style.display = "";
-							var options = tr[i].getElementsByTagName("td");
-							for (var j = 0; j < 3; j++) 
-								options[j].style.display = "";
-						}
-				} else if(currentSelectId == "selectC") {
-					if(tdC.innerHTML != slctOptionC &&
-					  (tdA.innerHTML == slctOptionA || slctOptionA=="") && 
-					  (tdB.innerHTML == slctOptionB || slctOptionB=="")) {
-							tr[i].style.display = "";
-							var options = tr[i].getElementsByTagName("td");
-							for (var j = 0; j < 3; j++) 
-								options[j].style.display = "";
+									options[j].style.display = "";
 						}
 				}
-		}
-	setOption(currentSelectId, "");
-	$("#" + currentSelectId).empty();
-	optionsDynamic();
-}
-
-function optionChanged(currentSelectId, secondSelectId, thirdSelectId, currentIndex) {
-	var input = getSelectedOption(currentSelectId);
-	setOption(currentSelectId, input);
-	table = document.getElementById("myTable");
-		tr = table.getElementsByTagName("tr");
-			for (i = 0; i < tr.length; i++) {
-				tdA = tr[i].getElementsByTagName("td")[0];
-				tdB = tr[i].getElementsByTagName("td")[1];
-				tdC = tr[i].getElementsByTagName("td")[2];
-				if((tdA.innerHTML != slctOptionA && slctOptionA != "") || 
-				   (tdB.innerHTML != slctOptionB && slctOptionB != "") || 
-				   (tdC.innerHTML != slctOptionC && slctOptionC != "")) {
-						tr[i].style.display = "none";
-						var options = tr[i].getElementsByTagName("td");
-						for (var j = 0; j < 3; j++) 
-							options[j].style.display = "none";
-					} else {
-						tr[i].style.display = "";
-						var options = tr[i].getElementsByTagName("td");
-						for (var j = 0; j < 3; j++) 
-								options[j].style.display = "";
-					}
-			}
-			
-	//alert(slctOptionA + " " + slctOptionB + " " + slctOptionC);
-	$("#" + secondSelectId).empty();
-	$("#" + thirdSelectId).empty();
-	optionsDynamic();
+		
+		//prepare for update the other possible selections
+		$("#" + currentSelectId).empty();
+		$("#" + secondSelectId).empty();
+		$("#" + thirdSelectId).empty();
+		//update the other possible selections
+		optionsDynamic();
+	}	
+	
+	//memorize the current three selections
 	setSelected("selectA", slctOptionA);
 	setSelected("selectB", slctOptionB);
 	setSelected("selectC", slctOptionC);
 }
 
+function removeFilter(currentSelectId) {
+	//get the option user wants to remove
+	var input = getSelectedOption(currentSelectId);
+	table = document.getElementById("myTable");
+		tr = table.getElementsByTagName("tr");
+			for (i = 0; i < tr.length; i++) {
+				tdA = tr[i].getElementsByTagName("td")[0];
+				tdB = tr[i].getElementsByTagName("td")[1];
+				tdC = tr[i].getElementsByTagName("td")[2];
+				//remove display:none from rows that don't contain the removed option
+				//but contain the option from the other current two selections
+				if(currentSelectId == "selectA") {
+					if(tdA.innerHTML != slctOptionA && 
+					  (tdB.innerHTML == slctOptionB || slctOptionB=="") &&
+					  (tdC.innerHTML == slctOptionC || slctOptionC=="")) 
+							removeDisplayNone(tr);
+				} else if(currentSelectId == "selectB") {
+					if(tdB.innerHTML != slctOptionB &&
+					  (tdA.innerHTML == slctOptionA || slctOptionA=="") &&
+					  (tdC.innerHTML == slctOptionC || slctOptionC==""))
+							removeDisplayNone(tr);
+				} else if(currentSelectId == "selectC") {
+					if(tdC.innerHTML != slctOptionC &&
+					  (tdA.innerHTML == slctOptionA || slctOptionA=="") && 
+					  (tdB.innerHTML == slctOptionB || slctOptionB=="")) 
+							removeDisplayNone(tr);		
+				}
+		}
+	//memorize the removed selection
+	setOption(currentSelectId, "");
+	//update the selection
+	$("#" + currentSelectId).empty();
+	optionsDynamic();
+}
+
+function removeDisplayNone(tr) {
+	//function that rome display:none from a row's elements
+	tr[i].style.display = "";
+	var options = tr[i].getElementsByTagName("td");
+		for (var j = 0; j < 3; j++) 
+		options[j].style.display = "";
+}
+
 function optionsDynamic() {
 	addAllOption()
-	/* pentru a afisa in select-uri optiunle de selectat inseamna ca aceste 
-	optiuni trebuie sa fie completate dinamic, dupa ce valori au mai ramas in tabel*/
+	//the values from options are completed dynamic
+	//by reading the data that s left in the table
 	var arrOptions = document.getElementsByTagName("td");
 	for (var i = 0; i < arrOptions.length; i++) {
 		if(arrOptions[i].style.display !== "none") {
-		//pentru A, sunt pozitiile 0 3 6 9 - conditie i % 3 == 0
+		//for A, the positions are: 0 3 6 9 - condition % 3 == 0
 		if (i % 3 == 0) 
 			optionsSet("selectA", arrOptions, i);
-		//pentru B, sunt pozitiile 1 4 7 10 - conditie (i-1) % 3 == 0
+		//for B, the positions are: 1 4 7 10 - condition (i-1) % 3 == 0
 		else if (i % 3 == 1) 
 			optionsSet("selectB", arrOptions, i);
-		//pentru C, sunt pozitiile 2 5 8 11 - conditie (i-2) % 3 == 0
+		//for C, the positions are: 2 5 8 11 - condition (i-2) % 3 == 0
 		else if (i % 3 == 2) 
 			optionsSet("selectC", arrOptions, i);
 		}
@@ -116,6 +126,7 @@ function optionsDynamic() {
 }
 
 function getSelectedOption(currentSelectId) {
+	//function that returns the selected option from select
 	var arrSelections = document.getElementById(currentSelectId);
 		for(var i = 0; i < arrSelections.length; i++)
 			if(arrSelections[i].selected == true) 
@@ -132,7 +143,7 @@ function optionsSet(selectId, arrOptions, i) {
 	}
 
 function addAllOption() {
-	// adaugarea variantei "Toate"
+	//adding the "Toate" option
 	optionsAll("selectA"); 
 	optionsAll("selectB"); 
 	optionsAll("selectC"); 
@@ -162,7 +173,7 @@ function optionsAll(selectId) {
 }
 
 function alreadyAdded(selectId, option) {
-	//functie pentru a avea optiunile o singura data in select
+	//fuction that helps not having duplicates options
 	var arrSelections = document.getElementById(selectId);
 	for(var i = 0; i < arrSelections.length; i++)
 		if(arrSelections[i].innerHTML == option) 
