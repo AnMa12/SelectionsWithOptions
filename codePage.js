@@ -1,47 +1,82 @@
-window.onload = function () { 
+var slctOptionA  = "";
+var slctOptionB  = "";
+var slctOptionC  = "";
 
-	/* ------ Initializare optiuni select ------ */
-		// adaugarea variantei "Toate"
-		optionsAll("selectA"); 
-		optionsAll("selectB"); 
-		optionsAll("selectC"); 
-		optionsDynamic();
-	/* ------ Initializare optiuni select FIN ------ */	
+window.onload = function () { 
+	/* --- Initialisation --- */
+	optionsDynamic();
 	
-	/* ---- Filter the options ---- */
-	document.getElementById("selectA").setAttribute("onchange","optionChanged('selectA','selectB','selectC',0)");
-	document.getElementById("selectB").setAttribute("onchange","optionChanged('selectB','selectA','selectC',1)");
-	document.getElementById("selectC").setAttribute("onchange","optionChanged('selectC','selectB','selectA',2)");
-	/* ---- Filter the options FIN ---- */
+	/* --- Filter the options --- */
+	document.getElementById("selectA").setAttribute("onchange",
+		"optionChanged('selectA','selectB','selectC',0)");
+	document.getElementById("selectB").setAttribute("onchange",
+		"optionChanged('selectB','selectA','selectC',1)");
+	document.getElementById("selectC").setAttribute("onchange",
+		"optionChanged('selectC','selectB','selectA',2)");
+	
+	/* --- Remove filter --- */
+	document.getElementById("btnA").setAttribute("onclick","removeFilter('selectA',0)");
+	document.getElementById("btnB").setAttribute("onclick","removeFilter('selectB',1)");
+	document.getElementById("btnC").setAttribute("onclick","removeFilter('selectC',2)");
 }
 
-function optionChanged(currentSelectId, secondSelectId, thirdSelectId, currnetIndex) {
-	var arrSelections = document.getElementById(currentSelectId);
-		for(var i = 0; i < arrSelections.length; i++)
-			if(arrSelections[i].selected == true) 
-				var input = arrSelections[i].innerHTML;
+function removeFilter(currentSelectId, currentIndex) {
+	var input = getSelectedOption(currentSelectId);
 	table = document.getElementById("myTable");
 		tr = table.getElementsByTagName("tr");
 			for (i = 0; i < tr.length; i++) {
-				td = tr[i].getElementsByTagName("td")[currnetIndex];
-				if(td.innerHTML != input) {
-					tr[i].style.display = "none";
-					var options = tr[i].getElementsByTagName("td");
-					for (var j = 0; j < 3; j++) 
-						options[j].style.display = "none";
-				} else {
+				tdA = tr[i].getElementsByTagName("td")[0];
+				tdB = tr[i].getElementsByTagName("td")[1];
+				tdC = tr[i].getElementsByTagName("td")[2];
+				if(tdA.innerHTML != slctOptionA &&
+				   tdB.innerHTML != slctOptionB &&
+				   tdC.innerHTML != slctOptionC) {
 					tr[i].style.display = "";
 					var options = tr[i].getElementsByTagName("td");
 					for (var j = 0; j < 3; j++) 
 							options[j].style.display = "";
-				}
 			}
-	$("#" + secondSelectId).empty();
-	$("#" + thirdSelectId).empty();
+		}
+	setOption(currentSelectId, "");
+	$("#" + currentSelectId).empty();
 	optionsDynamic();
 }
 
+function optionChanged(currentSelectId, secondSelectId, thirdSelectId, currentIndex) {
+	var input = getSelectedOption(currentSelectId);
+	setOption(currentSelectId, input);
+	table = document.getElementById("myTable");
+		tr = table.getElementsByTagName("tr");
+			for (i = 0; i < tr.length; i++) {
+				tdA = tr[i].getElementsByTagName("td")[0];
+				tdB = tr[i].getElementsByTagName("td")[1];
+				tdC = tr[i].getElementsByTagName("td")[2];
+				if((tdA.innerHTML != slctOptionA && slctOptionA != "") || 
+				   (tdB.innerHTML != slctOptionB && slctOptionB != "") || 
+				   (tdC.innerHTML != slctOptionC && slctOptionC != "")) {
+						tr[i].style.display = "none";
+						var options = tr[i].getElementsByTagName("td");
+						for (var j = 0; j < 3; j++) 
+							options[j].style.display = "none";
+					} else {
+						tr[i].style.display = "";
+						var options = tr[i].getElementsByTagName("td");
+						for (var j = 0; j < 3; j++) 
+								options[j].style.display = "";
+					}
+			}
+			
+	alert(slctOptionA + " " + slctOptionB + " " + slctOptionC);
+	$("#" + secondSelectId).empty();
+	$("#" + thirdSelectId).empty();
+	optionsDynamic();
+	setSelected("selectA", slctOptionA);
+	setSelected("selectB", slctOptionB);
+	setSelected("selectC", slctOptionC);
+}
+
 function optionsDynamic() {
+	addAllOption()
 	/* pentru a afisa in select-uri optiunle de selectat inseamna ca aceste 
 	optiuni trebuie sa fie completate dinamic, dupa ce valori au mai ramas in tabel*/
 	var arrOptions = document.getElementsByTagName("td");
@@ -60,18 +95,50 @@ function optionsDynamic() {
 	}	
 }
 
+function getSelectedOption(currentSelectId) {
+	var arrSelections = document.getElementById(currentSelectId);
+		for(var i = 0; i < arrSelections.length; i++)
+			if(arrSelections[i].selected == true) 
+				var input = arrSelections[i].innerHTML;
+	return input;
+}
+
 function optionsSet(selectId, arrOptions, i) {
 	var option = document.createElement("option");
 	option.text = arrOptions[i].innerHTML;
 	if(alreadyAdded(selectId,option.text) == false)
 		document.getElementById(selectId).add(option);
-		///!!!!! pentru toate?!?!? add la inceput si luam contor
+		
 	}
+
+function addAllOption() {
+	// adaugarea variantei "Toate"
+	optionsAll("selectA"); 
+	optionsAll("selectB"); 
+	optionsAll("selectC"); 
+}
+
+function setSelected(selectId, slctOption) {
+	if(slctOption != "")
+		$("#" + selectId).val(slctOption);
+	else 
+		$("#" + selectId).val("Toate");
+}
+
+function setOption(currentSelectId, input) {
+	if(currentSelectId == "selectA")
+		slctOptionA = input;
+	else if (currentSelectId == "selectB")
+		slctOptionB = input;
+	else 
+		slctOptionC = input;	
+}
 
 function optionsAll(selectId) {
 	var option = document.createElement("option");
 	option.text = "Toate";
-	document.getElementById(selectId).add(option);	
+	if(alreadyAdded(selectId,option.text) == false)
+		document.getElementById(selectId).add(option);	
 }
 
 function alreadyAdded(selectId, option) {
