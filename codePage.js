@@ -28,14 +28,34 @@ function removeFilter(currentSelectId, currentIndex) {
 				tdA = tr[i].getElementsByTagName("td")[0];
 				tdB = tr[i].getElementsByTagName("td")[1];
 				tdC = tr[i].getElementsByTagName("td")[2];
-				if(tdA.innerHTML != slctOptionA &&
-				   tdB.innerHTML != slctOptionB &&
-				   tdC.innerHTML != slctOptionC) {
-					tr[i].style.display = "";
-					var options = tr[i].getElementsByTagName("td");
-					for (var j = 0; j < 3; j++) 
-							options[j].style.display = "";
-			}
+				if(currentSelectId == "selectA") {
+					if(tdA.innerHTML != slctOptionA && 
+					  (tdB.innerHTML == slctOptionB || slctOptionB=="") &&
+					  (tdC.innerHTML == slctOptionC || slctOptionC=="")) {
+							tr[i].style.display = "";
+							var options = tr[i].getElementsByTagName("td");
+							for (var j = 0; j < 3; j++) 
+								options[j].style.display = "";
+						}
+				} else if(currentSelectId == "selectB") {
+					if(tdB.innerHTML != slctOptionB &&
+					  (tdA.innerHTML == slctOptionA || slctOptionA=="") &&
+					  (tdC.innerHTML == slctOptionC || slctOptionC=="")) {
+							tr[i].style.display = "";
+							var options = tr[i].getElementsByTagName("td");
+							for (var j = 0; j < 3; j++) 
+								options[j].style.display = "";
+						}
+				} else if(currentSelectId == "selectC") {
+					if(tdC.innerHTML != slctOptionC &&
+					  (tdA.innerHTML == slctOptionA || slctOptionA=="") && 
+					  (tdB.innerHTML == slctOptionB || slctOptionB=="")) {
+							tr[i].style.display = "";
+							var options = tr[i].getElementsByTagName("td");
+							for (var j = 0; j < 3; j++) 
+								options[j].style.display = "";
+						}
+				}
 		}
 	setOption(currentSelectId, "");
 	$("#" + currentSelectId).empty();
@@ -66,7 +86,7 @@ function optionChanged(currentSelectId, secondSelectId, thirdSelectId, currentIn
 					}
 			}
 			
-	alert(slctOptionA + " " + slctOptionB + " " + slctOptionC);
+	//alert(slctOptionA + " " + slctOptionB + " " + slctOptionC);
 	$("#" + secondSelectId).empty();
 	$("#" + thirdSelectId).empty();
 	optionsDynamic();
