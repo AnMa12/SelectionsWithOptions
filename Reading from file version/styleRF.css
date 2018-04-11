@@ -8,6 +8,18 @@ button {
 	border-radius: 25px;
 }
 
+input[type=text] {
+    padding:5px; 
+    border:2px solid #ccc; 
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.input {
+	padding-bottom: 19px;
+	display: flex;
+	align-items: center;
+}	
 
 .select {
 	display: flex;

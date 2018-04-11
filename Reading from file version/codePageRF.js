@@ -2,29 +2,60 @@ var slctOptionA  = "";
 var slctOptionB  = "";
 var slctOptionC  = "";
 
+
 window.onload = function () { 
-	/* --- Reading the text file*/
+	/* --- Reading the text file --- */
+	var textFile;
 	var fileInput = document.getElementById('fileInput');
 	var fileDisplayArea = document.getElementById('fileDisplayArea');
-
 	fileInput.addEventListener('change', function(e) {
-		var file = fileInput.files[0];
+		file = fileInput.files[0];
 		var textType = /text.*/;
-
 		if (file.type.match(textType)) {
 			var reader = new FileReader();
 			reader.onload = function(e) {
-				alert(reader.result);
+				textFile = reader.result;
+				var stringArray = [];
+				var stringElement = "";
+				for(var i = 0; i < textFile.length; i++)
+					if(textFile[i] != " " && textFile[i] != ",")
+						stringElement += textFile[i];
+					else {
+						stringArray.push(stringElement);
+						stringElement = "";
+					}
+				var textFileindex = 0;
+				var elementsNumber = 0;
+				var firstTime = 1;
+				var table = document.createElement("table");
+				table.setAttribute("id","myTable");
+				for(var a = 0; a < stringArray.length; a++) {
+					if (textFile[i] != " " && textFile[i] != ",") {
+						if(elementsNumber == 0) {
+							elementsNumber = 3;
+							if( firstTime == 1 )
+								firstTime = 0;
+							else 
+								table.appendChild(tr);
+							var tr = document.createElement("tr"); 
+						} else {
+							elementsNumber--;
+							var td = document.createElement("td");
+							td.innerHTML += stringArray[a];
+							tr.appendChild(td);  
+						}
+					}
+				}	
+				document.body.appendChild(table);
+				/* --- Initialisation --- */
+					optionsDynamic();
 			}
 			reader.readAsText(file);	
 		} else {
 			alert("File not supported!");	
 		}
-	});
+	});	
 
-	/* --- Initialisation --- */
-	optionsDynamic();
-	
 	/* --- Filter the options --- */
 	document.getElementById("selectA").setAttribute("onchange",
 		"optionChanged('selectA','selectB','selectC')");
@@ -66,7 +97,6 @@ function optionChanged(currentSelectId, secondSelectId, thirdSelectId) {
 									options[j].style.display = "";
 						}
 				}
-		
 		//prepare for update the other possible selections
 		$("#" + currentSelectId).empty();
 		$("#" + secondSelectId).empty();
