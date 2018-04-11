@@ -4,10 +4,6 @@ var slctOptionC  = "";
 
 window.onload = function () { 
 	/* --- getting txt file --- */
-	$.get( "http://radu.dev.ascensys.ro/code_tests/testData.txt", function( data ) {
-		$( ".result" ).html( data );
-		alert(data);
-	});
 	
 	/* --- Initialisation --- */
 	optionsDynamic();
