@@ -1,0 +1,24 @@
+table { 
+	margin: 14px 0px 0px 0px;
+}
+
+button {
+	background-color: white;
+	border: 0.5px solid gray;
+	border-radius: 25px;
+}
+
+
+.select {
+	display: flex;
+	align-items: center;
+}
+
+.select p {
+	width: 90px;
+}
+
+.select p, .select button, .select select {
+	margin: 0px;
+	margin-right: 5px;
+}
