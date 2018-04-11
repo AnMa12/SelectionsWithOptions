@@ -3,8 +3,6 @@ var slctOptionB  = "";
 var slctOptionC  = "";
 
 window.onload = function () { 
-	/* --- getting txt file --- */
-	
 	/* --- Initialisation --- */
 	optionsDynamic();
 	
