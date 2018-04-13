@@ -1,7 +1,7 @@
 var slctOptionA  = "";
 var slctOptionB  = "";
 var slctOptionC  = "";
-
+var fileChosed = 0;
 
 window.onload = function () { 
 	/* --- Reading the text file --- */
@@ -9,50 +9,60 @@ window.onload = function () {
 	var fileInput = document.getElementById('fileInput');
 	var fileDisplayArea = document.getElementById('fileDisplayArea');
 	fileInput.addEventListener('change', function(e) {
-		file = fileInput.files[0];
-		var textType = /text.*/;
-		if (file.type.match(textType)) {
-			var reader = new FileReader();
-			reader.onload = function(e) {
-				textFile = reader.result;
-				var stringArray = [];
-				var stringElement = "";
-				for(var i = 0; i < textFile.length; i++)
-					if(textFile[i] != " " && textFile[i] != ",")
-						stringElement += textFile[i];
-					else {
-						stringArray.push(stringElement);
-						stringElement = "";
-					}
-				var textFileindex = 0;
-				var elementsNumber = 0;
-				var firstTime = 1;
-				var table = document.createElement("table");
-				table.setAttribute("id","myTable");
-				for(var a = 0; a < stringArray.length; a++) {
-					if (textFile[i] != " " && textFile[i] != ",") {
-						if(elementsNumber == 0) {
-							elementsNumber = 3;
-							if( firstTime == 1 )
-								firstTime = 0;
-							else 
-								table.appendChild(tr);
-							var tr = document.createElement("tr"); 
+		/*--- for the first file load ---*/
+		if(fileChosed == 0) {
+			fileChosed = 1;
+			file = fileInput.files[0];
+			var textType = /text.*/;
+			if (file.type.match(textType)) {
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					textFile = reader.result;
+					//alert(textFile);
+					textFile = textFile.replace(/[\n]/g," ");
+					textFile = textFile.replace(/[\r]/g,"");
+					textFile = textFile.replace(/,/g, " ");
+					//alert(textFile);
+					
+					var arrOption = [];
+					var newOption = "";
+					for(var i = 0; i < textFile.length; i++) {
+						if(textFile[i] != " ") {
+							newOption += textFile[i];
+							//alert("*constr*" + newOption);
 						} else {
-							elementsNumber--;
-							var td = document.createElement("td");
-							td.innerHTML += stringArray[a];
-							tr.appendChild(td);  
+							arrOption.push(newOption);
+							newOption = "";
 						}
 					}
-				}	
-				document.body.appendChild(table);
-				/* --- Initialisation --- */
-					optionsDynamic();
-			}
-			reader.readAsText(file);	
-		} else {
-			alert("File not supported!");	
+					arrOption.push(newOption);
+					
+					//for( var i = 0; i < arrOption.length; i++)
+						//alert(i + "-" + arrOption[i]);
+					
+					/* --- Create the table --- */
+					var table = document.createElement("table");
+					table.setAttribute("id","myTable");
+					for( var i = 0; i <= arrOption.length; i++) {
+						if(i == 0) 
+							var tr = document.createElement("tr"); 
+						else if ( i % 3 == 0) {
+							table.appendChild(tr);
+							var tr = document.createElement("tr"); 
+						}
+						var td = document.createElement("td");
+						td.innerHTML = arrOption[i];
+						tr.appendChild(td);
+					}
+					document.body.appendChild(table);
+					
+					/* --- Initialisation --- */
+						optionsDynamic();
+				}
+				reader.readAsText(file);	
+				} else {
+					alert("File not supported!");	
+				}
 		}
 	});	
 
