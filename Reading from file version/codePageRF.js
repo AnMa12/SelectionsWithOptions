@@ -9,60 +9,19 @@ window.onload = function () {
 	var fileInput = document.getElementById('fileInput');
 	var fileDisplayArea = document.getElementById('fileDisplayArea');
 	fileInput.addEventListener('change', function(e) {
-		/*--- for the first file load ---*/
+		/*--- first file load ---*/
 		if(fileChosed == 0) {
-			fileChosed = 1;
-			file = fileInput.files[0];
-			var textType = /text.*/;
-			if (file.type.match(textType)) {
-				var reader = new FileReader();
-				reader.onload = function(e) {
-					textFile = reader.result;
-					//alert(textFile);
-					textFile = textFile.replace(/[\n]/g," ");
-					textFile = textFile.replace(/[\r]/g,"");
-					textFile = textFile.replace(/,/g, " ");
-					//alert(textFile);
-					
-					var arrOption = [];
-					var newOption = "";
-					for(var i = 0; i < textFile.length; i++) {
-						if(textFile[i] != " ") {
-							newOption += textFile[i];
-							//alert("*constr*" + newOption);
-						} else {
-							arrOption.push(newOption);
-							newOption = "";
-						}
-					}
-					arrOption.push(newOption);
-					
-					//for( var i = 0; i < arrOption.length; i++)
-						//alert(i + "-" + arrOption[i]);
-					
-					/* --- Create the table --- */
-					var table = document.createElement("table");
-					table.setAttribute("id","myTable");
-					for( var i = 0; i <= arrOption.length; i++) {
-						if(i == 0) 
-							var tr = document.createElement("tr"); 
-						else if ( i % 3 == 0) {
-							table.appendChild(tr);
-							var tr = document.createElement("tr"); 
-						}
-						var td = document.createElement("td");
-						td.innerHTML = arrOption[i];
-						tr.appendChild(td);
-					}
-					document.body.appendChild(table);
-					
-					/* --- Initialisation --- */
-						optionsDynamic();
-				}
-				reader.readAsText(file);	
-				} else {
-					alert("File not supported!");	
-				}
+			readFromFile(e);
+		}
+		/*--- not first file load ---*/
+		else {
+			/* --- clear old data for new data --- */
+			var table = document.getElementById("myTable");
+			table.parentNode.removeChild(table);
+			document.getElementById("selectA").innerHTML = "";
+			document.getElementById("selectB").innerHTML = "";
+			document.getElementById("selectC").innerHTML = "";
+			readFromFile(e);
 		}
 	});	
 
@@ -78,6 +37,61 @@ window.onload = function () {
 	document.getElementById("btnA").setAttribute("onclick","removeFilter('selectA')");
 	document.getElementById("btnB").setAttribute("onclick","removeFilter('selectB')");
 	document.getElementById("btnC").setAttribute("onclick","removeFilter('selectC')");
+}
+
+function readFromFile(e) {
+	fileChosed = 1;
+	file = fileInput.files[0];
+		var textType = /text.*/;
+		if (file.type.match(textType)) {
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				textFile = reader.result;
+					
+				/* --- delete newlines and commas --- */
+				textFile = textFile.replace(/[\n]/g," ");
+				textFile = textFile.replace(/[\r]/g,"");
+				textFile = textFile.replace(/,/g, " ");
+
+				/* --- Create array with options ---*/
+				var arrOption = [];
+				var newOption = "";
+				for(var i = 0; i < textFile.length; i++) {
+					if(textFile[i] != " ") {
+						newOption += textFile[i];
+						//alert("*constr*" + newOption);
+					} else {
+						arrOption.push(newOption);
+						newOption = "";
+					}
+				}
+				arrOption.push(newOption);
+				/* --- Create array with options fin ---*/
+
+				/* --- Create the table --- */
+				var table = document.createElement("table");
+				table.setAttribute("id","myTable");
+				for( var i = 0; i <= arrOption.length; i++) {
+					if(i == 0) 
+						var tr = document.createElement("tr"); 
+					else if ( i % 3 == 0) {
+						table.appendChild(tr);
+						var tr = document.createElement("tr"); 
+					}
+					var td = document.createElement("td");
+					td.innerHTML = arrOption[i];
+					tr.appendChild(td);
+				}
+				document.body.appendChild(table);
+				/* --- Create the table fin --- */
+					
+				/* --- Initialisation --- */
+				optionsDynamic();
+			}
+			reader.readAsText(file);	
+		} else {
+			alert("File not supported!");	
+		}
 }
 
 function optionChanged(currentSelectId, secondSelectId, thirdSelectId) {
